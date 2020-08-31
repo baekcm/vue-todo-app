@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/style.css" rel="stylesheet">
+    </head>
+    <body>
+    
+        <div id="result"></div>
+        <button id="btn">run</button>
+
+        <script>
+          //--- 자바스크립트에는 동기적으로 sleep하는 함수가 없기 때문에 직접 만들었다.
+          function sleep(delay) {
+            var start = new Date().getTime();
+            while (new Date().getTime() < start + delay);
+          }
+
+          document.querySelector('#btn').addEventListener('click', function () {
+            //--- 3초가 걸림을 표현
+            sleep(3000);
+            var div = document.createElement('div');
+            div.textContent = Math.random();
+            document.querySelector('#result').appendChild(div);
+          });
+
+        </script>
+
+        <script>
+        //--- 위의 상황을 웹 워커를 사용해서 개선해본다.
+        //--- 버튼을 누를 때, 직접 계산하는 것이 아니라 워커를 생성하고 
+        //--- 워커에게 postMessage로 일하라고 알린다.
+        document.querySelector('#btn').addEventListener('click', function () {
+            var worker = new Worker('./worker.js');
+            //--- 워커에 message 이벤트 리스너를 붙이는 것은 워커로부터 결괏값을 받기 위함
+            worker.addEventListener('message', function(e) {
+                var div = document.createElement('div');
+                //--- e.data로 받아올 수 있다. 결괏값을 DOM에 반영한 후에는 
+                div.textContent = e.data; // 0.1238917491
+                document.querySelector('#result').appendChild(div);
+                //--- terminate 메소드로 워커를 종료
+                worker.terminate();
+            });
+            //--- 워커에게 postMessage로 일하라고 알린다.
+            worker.postMessage('일해라 워커!');
+        });
+        </script>
+
+    </body>
+</html>

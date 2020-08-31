@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Attribute 사용하기</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <style>
+        div.dropdown {
+           /* background-color: #09C; */
+           width: 150px;
+           height: 40px;
+           margin-top : 10px;
+           padding: 20px;
+        }
+
+        .dropdown ul {
+            display: none;
+            list-style: none;
+            margin: 0;
+            border: 1px solid black;
+            padding: 10px;
+            width: 200px;
+        }
+
+        .dropdown.on ul {
+            display: block;
+        }
+    </style>
+    
+</head>
+<body>
+
+<div id="app">
+    <!-- Vue.js 사용하지 않는 일반적인 방법 -->
+    <div><img src="https://picsum.photos/200/200/?image=350"></div>
+
+    <!-- Vue.js 사용한 방법 -->
+    <!-- 원래 v-bind:src 가 정식 지시자이다. -->
+    <div><img v-bind:src="image"></div>
+
+    <!-- :src 는 v-bind:src 단축 표현이다. 사용이 간편해서 일반적으로 이 방법을 선호한다. -->
+    <div><img :src="image2"></div>
+    
+    <!-- 
+        콜론(:)을 붙이면 :src="javascript의 영역이 된다. 변수를 넣는것 이외에도 string 연산을
+        하는등의 작업을 할 수 있다." 
+    -->
+    <!-- 
+        list 를 출력하는 경우 각 tag 의 id 값 앞에 element 를 지칭하는 prifix 와 
+        항목을 구분하는 값을 섞어서 흔히 사용한다.
+        대부분의 경우에는 string 연산을 하는것 만으로도 원하는 기능을 구현하는데, 
+        문제가 없지만 class 와 style 속성은 단순 string 연산만으로는 구현이 어렵기 때문에 
+        json 과 배열로 값을 설정할 수 있는 기능을 제공하고 있다.
+    -->
+    <!-- `thumbnail_${id}` ECMA6 에 추가된 Template String 기능. -->
+    <div><img :id="`thumbnail_${id}`" :src="image3"></div>
+
+    <!-- string 사용 시 -->
+    <div :style="style">
+        테스트용 DIV
+    </div>
+
+    <!-- json 사용 시 -->
+    <div :style="[style2, styleArr]">
+        Style Array 테스트용 DIV
+    </div>
+
+    <!-- class 역시 string, json 으로 관리할 수 있다. -->
+    <!-- string 사용 시 -->
+    <div :class="dropdown">
+        class 사용 DIV
+    </div>
+
+    <!-- <div :class="{ dropdown : dropdown, toggle : toggle }"></div> -->
+    <div :class="[dropdown, toggle]">
+        <ul>
+            <li><a href="#">메뉴1</a></li>
+            <li><a href="#">메뉴2</a></li>
+        </ul>
+    </div>
+
+</div>
+
+<script>
+    const app = new Vue({
+        el : '#app',
+        data() {
+            return {
+                id : 1,
+                image : 'https://picsum.photos/200/200/?image=353',
+                image2 : 'https://picsum.photos/200/200/?image=360',
+                image3 : 'https://picsum.photos/200/200/?image=370',
+                style : 'background : red',
+                style2 : {
+                    'background' : 'green'
+                },
+                styleArr : {
+                    'font-size' : '30px',
+                    'font-family' : 'dotum',
+                    'margin-top' : '10px'
+                },
+                //dropdown : 'dropdown',
+                /*
+                dropdown : {
+                    dropdown : true
+                },
+                */
+                dropdown : 'dropdown',
+                toggle : {
+                    on : false
+                }
+            }
+        }
+    })
+
+    //--- true : 메뉴가 나타난다. / false : 메뉴가 사라진다.
+    //app.toggle.on = true;
+    //app.toggle.on = false;
+
+</script>
+
+</body>
+</html>

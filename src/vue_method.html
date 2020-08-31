@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Method 사용하기</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <style>
+        div.dropdown {
+           /* background-color: #09C; */
+           width: 150px;
+           height: 40px;
+           margin-top : 10px;
+           padding: 20px;
+        }
+
+        .dropdown ul {
+            display: none;
+            list-style: none;
+            margin: 0;
+            border: 1px solid black;
+            padding: 10px;
+            width: 200px;
+        }
+
+        .dropdown.on ul {
+            display: block;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="app">
+    <!-- 
+        'v-on:이벤트명' 을 적어주게 되면 따옴표 안이 javascript 영역이 되어,
+        연산 작업을 하거나, method 를 호출할 수 있다.
+    -->
+    <!-- 아래의 방법은 가독성이 떨어지므로, method 를 선언해서 연결해준다. -->
+    <!-- <button type="button" v-on:click="counter++">더하기</button> -->
+
+    <!-- <button type="button" v-on:click="add">더하기</button> -->
+    <!-- v-bind 와 같이 v-on 또한 단축해서 사용할 수 있다. -->
+    <button type="button" @click="add">더하기</button>
+    {{ counter }}
+
+    <!-- 
+        Vue.js 에서 Event 를 받아올 때 유용하게 사용할 수 있는 기능이 있는데
+        예를 들어, 특정 key 가 입력됐을 때만 method 를 실행하게 할 수 있고,
+        Event 버블링을 쉽게 막을 수 있다.
+     -->
+    <!-- <input type="text" @keyup="keyUp"> -->
+    <!-- Vue.js 에서는 아래와 같이 enter key 에만 동작하도록 간단히 설정할 수 있다. -->
+    <input type="text" @keyup.enter="keyUp2">
+
+    <br />
+    <br />
+    <br />
+    <div>
+        <button type="button" @click="btnClick">버튼</button>
+    </div>
+
+    <!-- dropdown toggle menu event binding -->
+    <div :class="[dropdown, toggle]">
+        <ul>
+            <li><a href="#">메뉴1</a></li>
+            <li><a href="#">메뉴2</a></li>
+        </ul>
+    </div>
+
+</div>
+
+<script>
+    const app = new Vue({
+        el : '#app',
+        data() {
+            return {
+                counter : 7,
+                dropdown : 'dropdown',
+                toggle : {
+                    on : false
+                }
+            }
+        },
+        /*
+        ** Vue.js 는 내부에서 사용할 함수들을 methods 라는 json 을 만들어 그 안에 method 를 
+        ** 선언해서 사용한다.
+        */ 
+        /* 
+        ** 주의할 점으로는 화살표 함수를 사용하면 안된다.
+        ** methods 안의 method 들의 기능을 구현하다보면, data 에 접근해야 하는 등의 Vue.js 객체에
+        ** 접근해야 할 일들이 많아지는데, 화살표 함수는 this 를 binding 하지 않으니 this 가
+        ** Vue 객체로 바뀌지가 않는다.
+        */ 
+        methods : {
+            //--- 결과 : undefined
+            /*
+            add : () => {
+                console.log(this.counter);
+            }
+            */
+            add() {
+                this.counter++;
+                console.log(this.counter);
+            },
+            keyUp(e) {
+                if(e.keyCode !== 13) {
+                    //console.log('엔터키 아님');
+                    alert('엔터키 아님!!!');
+                    return;
+                }
+
+                console.log('엔터키 눌림');
+            },
+            keyUp2(e) {
+                console.log('엔터키 눌림');
+            },
+            btnClick(e) {
+                this.toggle.on = !this.toggle.on;
+            }
+        }
+    })
+
+    //app.add();
+
+</script>
+
+</body>
+</html>
